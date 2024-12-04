@@ -13,27 +13,27 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.util.Units;
 
 public class ElevatorIOTalonFX implements ElevatorIO {
-  private final TalonFX topTalon;
-  private final TalonFX bottomTalon;
+  private final TalonFX leftTalon;
+  private final TalonFX rightTalon;
 
-  private final StatusSignal<Double> topPositionRads;
-  private final StatusSignal<Double> topVelocityRPM;
-  private final StatusSignal<Double> topAppliedVolts;
-  private final StatusSignal<Double> topSupplyCurrent;
-  private final StatusSignal<Double> topTemp;
-  private final StatusSignal<Double> bottomPositionRads;
-  private final StatusSignal<Double> bottomVelocityRPM;
-  private final StatusSignal<Double> bottomAppliedVolts;
-  private final StatusSignal<Double> bottomSupplyCurrent;
-  private final StatusSignal<Double> bottomTemp;
+  private final StatusSignal<Double> leftPositionRads;
+  private final StatusSignal<Double> leftVelocityRPM;
+  private final StatusSignal<Double> leftAppliedVolts;
+  private final StatusSignal<Double> leftSupplyCurrent;
+  private final StatusSignal<Double> leftTemp;
+  private final StatusSignal<Double> rightPositionRads;
+  private final StatusSignal<Double> rightVelocityRPM;
+  private final StatusSignal<Double> rightAppliedVolts;
+  private final StatusSignal<Double> rightSupplyCurrent;
+  private final StatusSignal<Double> rightTemp;
 
   private final Slot0Configs gainsConfig = new Slot0Configs();
   private final VelocityVoltage velocityOutput = new VelocityVoltage(0).withUpdateFreqHz(0);
   private final NeutralOut neutralOutput = new NeutralOut();
 
   public ElevatorIOTalonFX() {
-    topTalon = new TalonFX(ELEVATOR_CONFIG.topID());
-    bottomTalon = new TalonFX(ELEVATOR_CONFIG.bottomID());
+    leftTalon = new TalonFX(ELEVATOR_CONFIG.leftID());
+    rightTalon = new TalonFX(ELEVATOR_CONFIG.rightID());
 
     TalonFXConfiguration config = new TalonFXConfiguration();
     config.CurrentLimits.SupplyCurrentLimit = 60.0; // FIXME
@@ -48,59 +48,59 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     gainsConfig.kV = GAINS.kV();
     gainsConfig.kA = GAINS.kA();
 
-    topTalon.getConfigurator().apply(config);
-    bottomTalon.getConfigurator().apply(config);
-    topTalon.getConfigurator().apply(gainsConfig);
-    bottomTalon.getConfigurator().apply(gainsConfig);
+    leftTalon.getConfigurator().apply(config);
+    rightTalon.getConfigurator().apply(config);
+    leftTalon.getConfigurator().apply(gainsConfig);
+    rightTalon.getConfigurator().apply(gainsConfig);
 
-    topTalon.setInverted(true);
-    bottomTalon.setInverted(true); // FIXME
+    leftTalon.setInverted(true);
+    rightTalon.setInverted(true); // FIXME
 
-    topPositionRads = topTalon.getPosition();
-    topVelocityRPM = topTalon.getVelocity();
-    topAppliedVolts = topTalon.getMotorVoltage();
-    topSupplyCurrent = topTalon.getSupplyCurrent();
-    topTemp = topTalon.getDeviceTemp();
+    leftPositionRads = leftTalon.getPosition();
+    leftVelocityRPM = leftTalon.getVelocity();
+    leftAppliedVolts = leftTalon.getMotorVoltage();
+    leftSupplyCurrent = leftTalon.getSupplyCurrent();
+    leftTemp = leftTalon.getDeviceTemp();
 
-    bottomPositionRads = bottomTalon.getPosition();
-    bottomVelocityRPM = bottomTalon.getVelocity();
-    bottomAppliedVolts = bottomTalon.getMotorVoltage();
-    bottomSupplyCurrent = bottomTalon.getSupplyCurrent();
-    bottomTemp = bottomTalon.getDeviceTemp();
+    rightPositionRads = rightTalon.getPosition();
+    rightVelocityRPM = rightTalon.getVelocity();
+    rightAppliedVolts = rightTalon.getMotorVoltage();
+    rightSupplyCurrent = rightTalon.getSupplyCurrent();
+    rightTemp = rightTalon.getDeviceTemp();
   }
 
   @Override
   public void updateInputs(ElevatorIOInputs inputs) {
-    inputs.topMotorConnected =
+    inputs.leftMotorConnected =
         BaseStatusSignal.refreshAll(
-                topPositionRads, topVelocityRPM, topAppliedVolts, topSupplyCurrent, topTemp)
+                leftPositionRads, leftVelocityRPM, leftAppliedVolts, leftSupplyCurrent, leftTemp)
             .isOK();
-    inputs.bottomMotorConnected =
+    inputs.rightMotorConnected =
         BaseStatusSignal.refreshAll(
-                bottomPositionRads,
-                bottomVelocityRPM,
-                bottomAppliedVolts,
-                bottomSupplyCurrent,
-                bottomTemp)
+                rightPositionRads,
+                rightVelocityRPM,
+                rightAppliedVolts,
+                rightSupplyCurrent,
+                rightTemp)
             .isOK();
 
-    inputs.topPositionRads = Units.rotationsToRadians(topPositionRads.getValueAsDouble());
-    inputs.topVelocityRPM = topVelocityRPM.getValueAsDouble() * 60.0;
-    inputs.topAppliedVolts = topAppliedVolts.getValueAsDouble();
-    inputs.topSupplyCurrent = topSupplyCurrent.getValueAsDouble();
-    inputs.topTempCelcius = topTemp.getValueAsDouble();
+    inputs.leftPositionRads = Units.rotationsToRadians(leftPositionRads.getValueAsDouble());
+    inputs.leftVelocityRPM = leftVelocityRPM.getValueAsDouble() * 60.0;
+    inputs.leftAppliedVolts = leftAppliedVolts.getValueAsDouble();
+    inputs.leftSupplyCurrent = leftSupplyCurrent.getValueAsDouble();
+    inputs.leftTempCelcius = leftTemp.getValueAsDouble();
 
-    inputs.bottomPositionRads = Units.rotationsToRadians(bottomPositionRads.getValueAsDouble());
-    inputs.bottomVelocityRPM = bottomVelocityRPM.getValueAsDouble() * 60.0;
-    inputs.bottomAppliedVolts = bottomAppliedVolts.getValueAsDouble();
-    inputs.bottomSupplyCurrent = bottomSupplyCurrent.getValueAsDouble();
-    inputs.bottomTempCelcius = bottomTemp.getValueAsDouble();
+    inputs.rightPositionRads = Units.rotationsToRadians(rightPositionRads.getValueAsDouble());
+    inputs.rightVelocityRPM = rightVelocityRPM.getValueAsDouble() * 60.0;
+    inputs.rightAppliedVolts = rightAppliedVolts.getValueAsDouble();
+    inputs.rightSupplyCurrent = rightSupplyCurrent.getValueAsDouble();
+    inputs.rightTempCelcius = rightTemp.getValueAsDouble();
   }
 
   @Override
-  public void runVelocity(int topVelocity, int bottomVelocity) {
-    topTalon.setControl(velocityOutput.withVelocity(topVelocity / 60));
-    bottomTalon.setControl(velocityOutput.withVelocity(bottomVelocity / 60));
+  public void runVelocity(int leftVelocity, int rightVelocity) {
+    leftTalon.setControl(velocityOutput.withVelocity(leftVelocity / 60));
+    rightTalon.setControl(velocityOutput.withVelocity(rightVelocity / 60));
   }
 
   @Override
@@ -112,13 +112,13 @@ public class ElevatorIOTalonFX implements ElevatorIO {
     gainsConfig.kV = kV;
     gainsConfig.kA = kA;
 
-    topTalon.getConfigurator().apply(gainsConfig);
-    bottomTalon.getConfigurator().apply(gainsConfig);
+    leftTalon.getConfigurator().apply(gainsConfig);
+    rightTalon.getConfigurator().apply(gainsConfig);
   }
 
   @Override
   public void stop() {
-    topTalon.setControl(neutralOutput);
-    bottomTalon.setControl(neutralOutput);
+    leftTalon.setControl(neutralOutput);
+    rightTalon.setControl(neutralOutput);
   }
 }

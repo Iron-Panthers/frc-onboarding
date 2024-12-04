@@ -17,7 +17,7 @@ public class ElevatorConstants {
         case SIM -> new PIDGains(0, 0, 0, 0, 0, 0);
       };
 
-  public record ElevatorConfig(int topID, int bottomID, double reduction) {}
+  public record ElevatorConfig(int leftID, int rightID, double reduction) {}
 
   public record PIDGains(double kP, double kI, double kD, double kS, double kV, double kA) {}
 }

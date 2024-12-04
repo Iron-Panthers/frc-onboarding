@@ -11,7 +11,7 @@ import frc.robot.subsystems.elevator.Elevator;
 import frc.robot.subsystems.elevator.ElevatorConstants;
 import frc.robot.subsystems.elevator.ElevatorIO;
 import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
-import frc.robot.subsystems.elevator.ElevatorIOTalonFX;
+import frc.robot.subsystems.elevator.Elevator.ElevatorVelocityTarget;
 import frc.robot.subsystems.flywheels.Flywheels;
 import frc.robot.subsystems.flywheels.FlywheelsIO;
 import frc.robot.subsystems.flywheels.Flywheels.VelocityTarget;
@@ -143,6 +143,25 @@ public class RobotContainer {
                   flywheels.setVelocityTarget(VelocityTarget.IDLE);
                 },
                 flywheels));
+
+// -----Elevator Controls-----
+//
+    driverA
+        .rightTrigger()
+        .onTrue(
+            new InstantCommand(
+              () -> {
+                elevator.setVelocityTarget(ElevatorVelocityTarget.UP);
+              },
+              elevator));
+    driverA
+        .leftTrigger()
+        .onTrue(
+          new InstantCommand(
+            () -> {
+              elevator.setVelocityTarget(ElevatorVelocityTarget.DOWN);
+            },
+            elevator));
   }
 
   private void configureAutos() {}

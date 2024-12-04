@@ -6,15 +6,15 @@ import org.littletonrobotics.junction.Logger;
 
 public class Elevator extends SubsystemBase {
   // RPM
-  public enum VelocityTarget {
+  public enum ElevatorVelocityTarget {
     IDLE(0, 0),
-    SHOOT(7500, 7500),
-    SLOW(1200, 1200);
-    private int topVelocity, bottomVelocity;
+    UP(7500, 7500),
+    DOWN(1200, 1200);
+    private int leftVelocity, rightVelocity;
 
-    private VelocityTarget(int topVelocity, int bottomVelocity) {
-      this.topVelocity = topVelocity;
-      this.bottomVelocity = bottomVelocity;
+    private ElevatorVelocityTarget(int leftVelocity, int rightVelocity) {
+      this.leftVelocity = leftVelocity;
+      this.rightVelocity = rightVelocity;
     }
   }
 
@@ -22,7 +22,7 @@ public class Elevator extends SubsystemBase {
   private final ElevatorIOInputsAutoLogged inputs = new ElevatorIOInputsAutoLogged();
 
   @AutoLogOutput(key = "Mechanism/Elevator/Target")
-  private VelocityTarget velocityTarget = VelocityTarget.IDLE;
+  private ElevatorVelocityTarget velocityTarget = ElevatorVelocityTarget.IDLE;
 
   public Elevator(ElevatorIO io) {
     this.io = io;
@@ -33,13 +33,13 @@ public class Elevator extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Mechanism/Elevator", inputs);
 
-    io.runVelocity(velocityTarget.topVelocity, velocityTarget.bottomVelocity);
+    io.runVelocity(velocityTarget.leftVelocity, velocityTarget.rightVelocity);
 
-    Logger.recordOutput("Mechanism/Elevator/TopTargetVelocity", velocityTarget.topVelocity);
-    Logger.recordOutput("Mechanism/Elevator/BottomTargetVelocity", velocityTarget.bottomVelocity);
+    Logger.recordOutput("Mechanism/Elevator/leftTargetVelocity", velocityTarget.leftVelocity);
+    Logger.recordOutput("Mechanism/Elevator/rightTargetVelocity", velocityTarget.rightVelocity);
   }
 
-  public void setVelocityTarget(VelocityTarget target) {
+  public void setVelocityTarget(ElevatorVelocityTarget target) {
     velocityTarget = target;
   }
 }
