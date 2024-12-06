@@ -8,7 +8,7 @@ public class Elevator extends SubsystemBase {
   // RPM
   public enum ElevatorVelocityTarget {
     IDLE(0, 0),
-    UP(7500, 7500),
+    UP(1200, 1200),
     DOWN(1200, 1200);
     private int leftVelocity, rightVelocity;
 
